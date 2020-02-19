@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "127046827865",
+    "firebase_url": "https://podcast-94ce0.firebaseio.com",
+    "project_id": "podcast-94ce0",
+    "storage_bucket": "podcast-94ce0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:127046827865:android:989bae456ff1ce49a29648",
+        "android_client_info": {
+          "package_name": "com.mazivanhanga.tanaka.pod_cast_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "127046827865-o3l474p3e2sb1unrh6pir3vok4ld3j27.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mazivanhanga.tanaka.pod_cast_app",
+            "certificate_hash": "e638c5f9fc4dc4833b5001851fca7b1249940296"
+          }
+        },
+        {
+          "client_id": "127046827865-fao79oqpv37turvrbj4pi9bn45gudhg7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiks4REO933LP2lE50RifpX41h0uRxJlU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "127046827865-fao79oqpv37turvrbj4pi9bn45gudhg7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

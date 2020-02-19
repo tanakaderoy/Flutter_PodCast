@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>127046827865-gcr82940lac01kveet215md6tgpp9ao5.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.127046827865-gcr82940lac01kveet215md6tgpp9ao5</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>127046827865-o3l474p3e2sb1unrh6pir3vok4ld3j27.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBmw4kGatHzN5P4cbfqQaJc3RuBORnMmlA</string>
+	<key>GCM_SENDER_ID</key>
+	<string>127046827865</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.mazivanhanga.tanaka.podCastApp</string>
+	<key>PROJECT_ID</key>
+	<string>podcast-94ce0</string>
+	<key>STORAGE_BUCKET</key>
+	<string>podcast-94ce0.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:127046827865:ios:9d572330b75aa569a29648</string>
+	<key>DATABASE_URL</key>
+	<string>https://podcast-94ce0.firebaseio.com</string>
+</dict>
+</plist>

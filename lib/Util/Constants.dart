@@ -1,0 +1,9 @@
+const String kBASE_HOST = 'itunes.apple.com';
+const String kSEARCH_PATH= '/search';
+const String kHOME_KEY = 'home';
+const String kLIBRARY_KEY = 'library';
+const String kACCOUNT_KEY = 'account';
+final kAccessToken = "accessToken";
+final kIdToken = "idToken";
+final kFavePodCasts = 'FavPodCasts';
+final kPodCasts = 'PodCasts';

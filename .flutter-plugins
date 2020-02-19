@@ -1,0 +1,21 @@
+# This is a generated file; do not edit or check into version control.
+audio_service=/Users/tanaka.mazivanhanga@ibm.com/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/audio_service-0.6.1/
+audioplayers=/Users/tanaka.mazivanhanga@ibm.com/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/audioplayers-0.14.0/
+cloud_firestore=/Users/tanaka.mazivanhanga@ibm.com/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore-0.13.2+1/
+cloud_firestore_web=/Users/tanaka.mazivanhanga@ibm.com/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore_web-0.1.0+3/
+firebase_auth=/Users/tanaka.mazivanhanga@ibm.com/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_auth-0.15.4/
+firebase_auth_web=/Users/tanaka.mazivanhanga@ibm.com/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_auth_web-0.1.2/
+firebase_core=/Users/tanaka.mazivanhanga@ibm.com/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core-0.4.4/
+firebase_core_web=/Users/tanaka.mazivanhanga@ibm.com/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core_web-0.1.1+2/
+firebase_crashlytics=/Users/tanaka.mazivanhanga@ibm.com/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_crashlytics-0.1.2+5/
+flutter_isolate=/Users/tanaka.mazivanhanga@ibm.com/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_isolate-1.0.0+11/
+google_sign_in=/Users/tanaka.mazivanhanga@ibm.com/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in-4.1.1/
+google_sign_in_web=/Users/tanaka.mazivanhanga@ibm.com/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in_web-0.8.3+1/
+path_provider=/Users/tanaka.mazivanhanga@ibm.com/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-1.6.0/
+shared_preferences=/Users/tanaka.mazivanhanga@ibm.com/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences-0.5.6+1/
+shared_preferences_macos=/Users/tanaka.mazivanhanga@ibm.com/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_macos-0.0.1+5/
+shared_preferences_web=/Users/tanaka.mazivanhanga@ibm.com/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_web-0.1.2+3/
+sqflite=/Users/tanaka.mazivanhanga@ibm.com/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/sqflite-1.2.1/
+url_launcher=/Users/tanaka.mazivanhanga@ibm.com/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher-5.4.1/
+url_launcher_macos=/Users/tanaka.mazivanhanga@ibm.com/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_macos-0.0.1+2/
+url_launcher_web=/Users/tanaka.mazivanhanga@ibm.com/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_web-0.1.1/
