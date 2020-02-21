@@ -7,3 +7,7 @@ final kAccessToken = "accessToken";
 final kIdToken = "idToken";
 final kFavePodCasts = 'FavPodCasts';
 final kPodCasts = 'PodCasts';
+final kPlaying = 'playing';
+final kNotPlaying = 'notPlaying';
+final kStartUpAudio = 'startAudio';
+final kDispose = 'dispose';

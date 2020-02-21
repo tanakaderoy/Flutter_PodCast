@@ -12,13 +12,45 @@ class AccountPage extends StatelessWidget {
         title: Text("Account Screen"),
 
       ),
-      body:Center(child: IconButton(icon: Icon(Icons.not_interested),onPressed: (){
-        FirebaseHelper.instance.signOutGoogle();
-        FirebaseHelper.logout();
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context){
-          return LoginPage();
-        }));
-        },),)
+      body:Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text('Hi ${FirebaseHelper.instance.currentUser.email}',style: TextStyle(
+              inherit: true,
+              fontSize: 30.0,
+              color: Colors.white,
+              shadows: [
+                Shadow( // bottomLeft
+                    offset: Offset(-1.5, -1.5),
+                    color: Colors.black45
+                ),
+                Shadow( // bottomRight
+                    offset: Offset(1.5, -1.5),
+                    color: Colors.black45
+                ),
+                Shadow( // topRight
+                    offset: Offset(1.5, 1.5),
+                    color: Colors.black45
+                ),
+                Shadow( // topLeft
+                    offset: Offset(-1.5, 1.5),
+                    color: Colors.black45
+                ),
+
+              ]
+          ) ,textAlign: TextAlign.center,),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            child: FlatButton(child: Text('Sign out'),color: Colors.blue, onPressed: (){
+              FirebaseHelper.instance.signOutGoogle();
+              FirebaseHelper.logout();
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context){
+                return LoginPage();
+              }));
+              },),
+          ),
+        ],
+      )
     );
   }
 }

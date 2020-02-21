@@ -7,16 +7,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pod_cast_app/Util/Constants.dart';
 import 'package:pod_cast_app/models/ItunesSearchResultModel.dart';
 import 'package:pod_cast_app/models/PodDataModel.dart';
+import 'package:pod_cast_app/screens/BottomAppBar.dart';
 import 'package:pod_cast_app/screens/LibraryScreen.dart';
 import 'package:pod_cast_app/service/ApiService.dart';
+import 'package:pod_cast_app/service/AudioServiceHelper.dart';
 import 'package:pod_cast_app/service/FirebaseHelper.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:webfeed/domain/rss_feed.dart';
 import 'package:pod_cast_app/Util/Extensions.dart';
 import 'package:webfeed/domain/rss_item.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:dart_notification_center/dart_notification_center.dart';
+
 
 class HomePage extends StatefulWidget {
   final List<iTunesSearchResults> podData;
@@ -107,7 +112,7 @@ class _CarouselWithTitleState extends State<CarouselWithTitle> {
     return GestureDetector(
       onTap: () async {
         setState(() {
-          pod = widget.podData[_current];
+          pod = podData[_current];
         });
         await goToPoddetailScreen(context);
       },
@@ -125,18 +130,7 @@ class _CarouselWithTitleState extends State<CarouselWithTitle> {
                       imageUrl: img,
                       fit: BoxFit.cover,
                       width: 1000,
-                      placeholder: (_, __) => SizedBox(
-                        width: 1000,
-                        height: 500,
-                        child: Shimmer.fromColors(
-                            child: Container(
-                              width: 50,
-                              height: 50,
-                              color: Colors.grey,
-                            ),
-                            baseColor: Colors.blue,
-                            highlightColor: Colors.white),
-                      ),
+
                     ),
                     Positioned(
                       bottom: 0.0,
@@ -293,18 +287,7 @@ class _HomePodListState extends State<HomePodList> {
                       leading: CachedNetworkImage(
                         imageUrl: pod.artworkUrl100,
                         fit: BoxFit.cover,
-                        placeholder: (_, __) => SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: Shimmer.fromColors(
-                              child: Container(
-                                width: 50,
-                                height: 50,
-                                color: Colors.grey,
-                              ),
-                              baseColor: Colors.blue,
-                              highlightColor: Colors.white),
-                        ),
+
                       )
 
 //                    Image.network(
@@ -365,18 +348,7 @@ class _PodDetailScreenState extends State<PodDetailScreen> {
             child: CachedNetworkImage(
               imageUrl: pod.artworkUrl100,
               fit: BoxFit.cover,
-              placeholder: (_, __) => SizedBox(
-                width: 50,
-                height: 50,
-                child: Shimmer.fromColors(
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      color: Colors.grey,
-                    ),
-                    baseColor: Colors.blue,
-                    highlightColor: Colors.white),
-              ),
+
               imageBuilder: (context, imageProvider) => Container(
                 decoration: BoxDecoration(
                     image: DecorationImage(
@@ -390,18 +362,7 @@ class _PodDetailScreenState extends State<PodDetailScreen> {
                           child: CachedNetworkImage(
                             imageUrl: pod.artworkUrl600,
                             fit: BoxFit.cover,
-                            placeholder: (_, __) => SizedBox(
-                              width: 400,
-                              height: 400,
-                              child: Shimmer.fromColors(
-                                  child: Container(
-                                    width: 50,
-                                    height: 50,
-                                    color: Colors.grey,
-                                  ),
-                                  baseColor: Colors.blue,
-                                  highlightColor: Colors.white),
-                            ),
+
                           ),
                           elevation: 10,
                         ),
@@ -462,7 +423,7 @@ class _PodDetailScreenState extends State<PodDetailScreen> {
                                     child: Container(
                                       height:
                                           MediaQuery.of(context).size.height *
-                                              0.75,
+                                              0.73,
                                       padding: EdgeInsets.only(
                                           bottom: MediaQuery.of(context)
                                               .viewInsets
@@ -492,7 +453,7 @@ class _PodDetailScreenState extends State<PodDetailScreen> {
                                                         MediaQuery.of(context)
                                                             .size
                                                             .width,
-                                                    height: 100,
+                                                    height: MediaQuery.of(context).size.height * 0.30,
                                                   ),
                                                   BackdropFilter(
                                                     filter: ImageFilter.blur(
@@ -554,6 +515,29 @@ class _PodDetailScreenState extends State<PodDetailScreen> {
                                                       ),
                                                     ),
                                                   ),
+                                                  Center(child: Container(child: Text(pod.collectionName, style: TextStyle(
+                                                      inherit: true,
+                                                      fontSize: 48.0,
+                                                      color: Colors.white,
+                                                      shadows: [
+                                                        Shadow( // bottomLeft
+                                                            offset: Offset(-1.5, -1.5),
+                                                            color: Colors.black45
+                                                        ),
+                                                        Shadow( // bottomRight
+                                                            offset: Offset(1.5, -1.5),
+                                                            color: Colors.black45
+                                                        ),
+                                                        Shadow( // topRight
+                                                            offset: Offset(1.5, 1.5),
+                                                            color: Colors.black45
+                                                        ),
+                                                        Shadow( // topLeft
+                                                            offset: Offset(-1.5, 1.5),
+                                                            color: Colors.black45
+                                                        ),
+                                                      ]
+                                                  ),textAlign: TextAlign.center,),)),
                                                   Positioned(
                                                     left: 16.0,
                                                     right: 16.0,
@@ -561,13 +545,18 @@ class _PodDetailScreenState extends State<PodDetailScreen> {
                                                     child: Row(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
-                                                              .spaceBetween,
+                                                              .spaceAround,
                                                       children: <Widget>[
-                                                        Text(
-                                                          episode.title,
-                                                          style: TextStyle(
-                                                            fontSize: 12.0,
-                                                            color: Colors.white,
+                                                        Expanded(
+                                                          child: MarqueeWidget(
+                                                            child: Text(
+                                                              episode.title,
+                                                              style: TextStyle(
+                                                                fontSize: 12.0,
+                                                                backgroundColor: Colors.black45,
+                                                                color: Colors.white,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
                                                         IconButton(
@@ -587,6 +576,7 @@ class _PodDetailScreenState extends State<PodDetailScreen> {
                                                                       PodcastPlayer(
                                                                           episode:
                                                                               episode,
+                                                                          pod: pod,
                                                                           imageUrl:
                                                                               pod.artworkUrl600))),
                                                         )
@@ -596,6 +586,7 @@ class _PodDetailScreenState extends State<PodDetailScreen> {
                                                 ],
                                               ),
                                               Expanded(
+                                                flex: 2,
                                                   child: Padding(
                                                 padding:
                                                     const EdgeInsets.all(12.0),
@@ -654,6 +645,7 @@ class _PodDetailScreenState extends State<PodDetailScreen> {
                                                                                 pod.artworkUrl600,
                                                                             time:
                                                                                 w,
+                                                                                pod: pod,
                                                                           ),
                                                                         ),
                                                                       );
@@ -711,18 +703,7 @@ class _PodDetailScreenState extends State<PodDetailScreen> {
                                   CachedNetworkImage(
                                     imageUrl: pod.artworkUrl100,
                                     fit: BoxFit.cover,
-                                    placeholder: (_, __) => SizedBox(
-                                      width: 50,
-                                      height: 50,
-                                      child: Shimmer.fromColors(
-                                          child: Container(
-                                            width: 50,
-                                            height: 50,
-                                            color: Colors.grey,
-                                          ),
-                                          baseColor: Colors.blue,
-                                          highlightColor: Colors.white),
-                                    ),
+
                                   ),
                                   Positioned(
                                       top: 0,
@@ -767,8 +748,10 @@ class PodcastPlayer extends StatefulWidget {
   final RssItem episode;
   final String imageUrl;
   final String time;
+  final int mil;
+  final iTunesSearchResults pod;
 
-  PodcastPlayer({@required this.episode, @required this.imageUrl, this.time});
+  PodcastPlayer({@required this.episode, @required this.imageUrl, this.time, this.mil, this.pod});
 
   @override
   _PodcastPlayerState createState() => _PodcastPlayerState();
@@ -791,11 +774,14 @@ class _PodcastPlayerState extends State<PodcastPlayer>
   bool isPlaying = false;
   Duration seekToDuration;
 
+
   playPod() {
     if (isPlaying) {
       playPauseController.reverse();
+      DartNotificationCenter.post(channel: kNotPlaying, options: {"episode":episode, "image":imageUrl});
       audioPlayer.pause();
     } else {
+      DartNotificationCenter.post(channel: kPlaying, options: {"episode":episode, "image":imageUrl,"pod":widget.pod});
       playPauseController.forward();
       audioPlayer.resume();
     }
@@ -806,7 +792,7 @@ class _PodcastPlayerState extends State<PodcastPlayer>
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    audioPlayer.release();
+//    audioPlayer.release();
   }
 
   @override
@@ -825,6 +811,9 @@ class _PodcastPlayerState extends State<PodcastPlayer>
       } else if (timeList.length == 2) {
         seekToDuration = Duration(
             minutes: int.parse(timeList[0]), seconds: int.parse(timeList[1]));
+      }
+      if(widget.mil != null){
+        seekToDuration = Duration(milliseconds: widget.mil);
       }
     }
     initPlayer();
@@ -860,80 +849,213 @@ class _PodcastPlayerState extends State<PodcastPlayer>
             decoration: BoxDecoration(
               image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
             ),
-            child: Container(
-              color: Colors.black.withOpacity(0.75),
-              child: Column(
-                children: <Widget>[
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 40),
-                      child: Container(
-                          child: CachedNetworkImage(
-                        imageUrl: imageUrl,
-                        fit: BoxFit.cover,
-                        placeholder: (_, __) => SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: Shimmer.fromColors(
-                              child: Container(
-                                width: 50,
-                                height: 50,
-                                color: Colors.grey,
-                              ),
-                              baseColor: Colors.blue,
-                              highlightColor: Colors.white),
-                        ),
-                      )),
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              IconButton(
-                                icon: Icon(
-                                  Icons.replay_10,
-                                  size: 40,
-                                ),
-                                onPressed: () => audioPlayer
-                                    .seek(_position - Duration(seconds: 10)),
-                              ),
-                              GestureDetector(
-                                  onTap: () => playPod(),
-                                  child: AnimatedIcon(
-                                    icon: AnimatedIcons.play_pause,
-                                    progress: playPauseController,
-                                    size: 40,
-                                  )),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.forward_10,
-                                  size: 40,
-                                ),
-                                onPressed: () => audioPlayer
-                                    .seek(_position + Duration(seconds: 10)),
-                              )
-                            ],
+            child: StreamBuilder<Duration>(
+              stream: audioPlayer.onDurationChanged,
+              builder: (context, snapshot) {
+                if(!snapshot.hasData){
+                  return Container(
+                    color: Colors.black.withOpacity(0.75),
+                    child: Column(
+                      children: <Widget>[
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 40),
+                            child: Container(
+                                child: CachedNetworkImage(
+                                  imageUrl: imageUrl,
+                                  fit: BoxFit.cover,
+
+                                )),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              Text(_printDuration(_position)),
-                              Expanded(child: slider()),
-                              Text(_printDuration(_duration)),
-                            ],
-                          )
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.replay_10,
+                                        size: 40,
+                                      ),
+                                      onPressed: () => audioPlayer
+                                          .seek(_position - Duration(seconds: 10)),
+                                    ),
+                                    GestureDetector(
+                                        onTap: () => playPod(),
+                                        child: AnimatedIcon(
+                                          icon: AnimatedIcons.play_pause,
+                                          progress: playPauseController,
+                                          size: 40,
+                                        )),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.forward_10,
+                                        size: 40,
+                                      ),
+                                      onPressed: () => audioPlayer
+                                          .seek(_position + Duration(seconds: 10)),
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: <Widget>[
+                                    Text(_printDuration(_position)),
+                                    Expanded(child: slider()),
+                                    Text(_printDuration(_duration)),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                _duration = snapshot.data;
+                return StreamBuilder<Duration>(
+                  stream: audioPlayer.onAudioPositionChanged,
+                  builder: (context, snapshot) {
+                    if(!snapshot.hasData){
+                      return Container(
+                        color: Colors.black.withOpacity(0.75),
+                        child: Column(
+                          children: <Widget>[
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 40),
+                                child: Container(
+                                    child: CachedNetworkImage(
+                                      imageUrl: imageUrl,
+                                      fit: BoxFit.cover,
+
+                                    )),
+                              ),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.replay_10,
+                                            size: 40,
+                                          ),
+                                          onPressed: () => audioPlayer
+                                              .seek(_position - Duration(seconds: 10)),
+                                        ),
+                                        GestureDetector(
+                                            onTap: () => playPod(),
+                                            child: AnimatedIcon(
+                                              icon: AnimatedIcons.play_pause,
+                                              progress: playPauseController,
+                                              size: 40,
+                                            )),
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.forward_10,
+                                            size: 40,
+                                          ),
+                                          onPressed: () => audioPlayer
+                                              .seek(_position + Duration(seconds: 10)),
+                                        )
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      children: <Widget>[
+                                        Text(_printDuration(_position)),
+                                        Expanded(child: slider()),
+                                        Text(_printDuration(_duration)),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    _position = snapshot.data;
+                    return Container(
+                      color: Colors.black.withOpacity(0.75),
+                      child: Column(
+                        children: <Widget>[
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 40),
+                              child: Container(
+                                  child: CachedNetworkImage(
+                                imageUrl: imageUrl,
+                                fit: BoxFit.cover,
+
+                              )),
+                            ),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: <Widget>[
+                                      IconButton(
+                                        icon: Icon(
+                                          Icons.replay_10,
+                                          size: 40,
+                                        ),
+                                        onPressed: () => audioPlayer
+                                            .seek(_position - Duration(seconds: 10)),
+                                      ),
+                                      GestureDetector(
+                                          onTap: () => playPod(),
+                                          child: AnimatedIcon(
+                                            icon: AnimatedIcons.play_pause,
+                                            progress: playPauseController,
+                                            size: 40,
+                                          )),
+                                      IconButton(
+                                        icon: Icon(
+                                          Icons.forward_10,
+                                          size: 40,
+                                        ),
+                                        onPressed: () => audioPlayer
+                                            .seek(_position + Duration(seconds: 10)),
+                                      )
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: <Widget>[
+                                      Text(_printDuration(_position)),
+                                      Expanded(child: slider()),
+                                      Text(_printDuration(_duration)),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
-                    ),
-                  ),
-                ],
-              ),
+                    );
+                  }
+                );
+              }
             ),
           ),
         ),
@@ -943,16 +1065,23 @@ class _PodcastPlayerState extends State<PodcastPlayer>
 
   void initPlayer() {
     episode = widget.episode;
-    audioPlayer = AudioPlayer();
+    audioPlayer = AudioServiceHelperr.shared;
 
-    audioPlayer.durationHandler = (d) => setState(() {
-          _duration = d;
-        });
+//    audioPlayer.onDurationChanged.listen((duration){
+//      setState(() {
+//        _duration = duration;
+//      });
+//    });
 
-    audioPlayer.positionHandler = (p) => setState(() {
-          _position = p;
-        });
+//    audioPlayer.durationHandler = (d) => setState(() {
+//          _duration = d;
+//        });
+
+//    audioPlayer.positionHandler = (p) => setState(() {
+//          _position = p;
+//        });
     audioPlayer.setUrl(episode.enclosure.url);
+//    audioPlayer.setNotification(title: episode.title,albumTitle: episode.pubDate,imageUrl: imageUrl);
     audioPlayer.setReleaseMode(
         ReleaseMode.STOP); // set release mode so that it never releases
 
@@ -963,7 +1092,7 @@ class _PodcastPlayerState extends State<PodcastPlayer>
   }
 
   Widget slider() {
-    return Slider(
+   return Slider(
         activeColor: Colors.grey,
         inactiveColor: Colors.lightBlueAccent,
         max: _duration.inSeconds.toDouble(),
@@ -1040,6 +1169,7 @@ class _SearchBarState extends State<SearchBar> {
                 setState(() {
                   isEditing = false;
                 });
+                _searchController.clear();
               },
             )
           : null,
@@ -1167,3 +1297,4 @@ class _SearchBarState extends State<SearchBar> {
 //    });
 //  }
 //}
+

@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'PodCast App', theme: ThemeData.dark(), home: BufferPage());
+        title: 'PodCast App', debugShowCheckedModeBanner:false ,theme: ThemeData.dark(), home: BufferPage());
   }
 
 //  Widget screen() {
