@@ -33,7 +33,7 @@ class _BottomNavBarControllerState extends State<BottomNavBarController> {
 @override
   void dispose() {
     // TODO: implement dispose
-  DartNotificationCenter.post(channel: kDispose);
+//  DartNotificationCenter.post(channel: kDispose);
   DartNotificationCenter.unsubscribe(observer: this);
   AudioServiceHelperr.shared.release();
   print('dispose');
@@ -68,6 +68,8 @@ class _BottomNavBarControllerState extends State<BottomNavBarController> {
    PageController pageController;
    AudioPlayer audioPlayer;
   String imageUrl;
+
+
 
   @override
   void initState() {

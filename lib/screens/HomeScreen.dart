@@ -423,7 +423,7 @@ class _PodDetailScreenState extends State<PodDetailScreen> {
                                     child: Container(
                                       height:
                                           MediaQuery.of(context).size.height *
-                                              0.75,
+                                              0.73,
                                       padding: EdgeInsets.only(
                                           bottom: MediaQuery.of(context)
                                               .viewInsets
@@ -453,7 +453,7 @@ class _PodDetailScreenState extends State<PodDetailScreen> {
                                                         MediaQuery.of(context)
                                                             .size
                                                             .width,
-                                                    height: 200,
+                                                    height: MediaQuery.of(context).size.height * 0.30,
                                                   ),
                                                   BackdropFilter(
                                                     filter: ImageFilter.blur(
@@ -515,7 +515,29 @@ class _PodDetailScreenState extends State<PodDetailScreen> {
                                                       ),
                                                     ),
                                                   ),
-                                                  Center(child: Container(color:Colors.black45,child: Text(pod.collectionName, style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),textAlign: TextAlign.center,),)),
+                                                  Center(child: Container(child: Text(pod.collectionName, style: TextStyle(
+                                                      inherit: true,
+                                                      fontSize: 48.0,
+                                                      color: Colors.white,
+                                                      shadows: [
+                                                        Shadow( // bottomLeft
+                                                            offset: Offset(-1.5, -1.5),
+                                                            color: Colors.black45
+                                                        ),
+                                                        Shadow( // bottomRight
+                                                            offset: Offset(1.5, -1.5),
+                                                            color: Colors.black45
+                                                        ),
+                                                        Shadow( // topRight
+                                                            offset: Offset(1.5, 1.5),
+                                                            color: Colors.black45
+                                                        ),
+                                                        Shadow( // topLeft
+                                                            offset: Offset(-1.5, 1.5),
+                                                            color: Colors.black45
+                                                        ),
+                                                      ]
+                                                  ),textAlign: TextAlign.center,),)),
                                                   Positioned(
                                                     left: 16.0,
                                                     right: 16.0,
@@ -831,14 +853,140 @@ class _PodcastPlayerState extends State<PodcastPlayer>
               stream: audioPlayer.onDurationChanged,
               builder: (context, snapshot) {
                 if(!snapshot.hasData){
-                  return Container();
+                  return Container(
+                    color: Colors.black.withOpacity(0.75),
+                    child: Column(
+                      children: <Widget>[
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 40),
+                            child: Container(
+                                child: CachedNetworkImage(
+                                  imageUrl: imageUrl,
+                                  fit: BoxFit.cover,
+
+                                )),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.replay_10,
+                                        size: 40,
+                                      ),
+                                      onPressed: () => audioPlayer
+                                          .seek(_position - Duration(seconds: 10)),
+                                    ),
+                                    GestureDetector(
+                                        onTap: () => playPod(),
+                                        child: AnimatedIcon(
+                                          icon: AnimatedIcons.play_pause,
+                                          progress: playPauseController,
+                                          size: 40,
+                                        )),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.forward_10,
+                                        size: 40,
+                                      ),
+                                      onPressed: () => audioPlayer
+                                          .seek(_position + Duration(seconds: 10)),
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: <Widget>[
+                                    Text(_printDuration(_position)),
+                                    Expanded(child: slider()),
+                                    Text(_printDuration(_duration)),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
                 }
                 _duration = snapshot.data;
                 return StreamBuilder<Duration>(
                   stream: audioPlayer.onAudioPositionChanged,
                   builder: (context, snapshot) {
                     if(!snapshot.hasData){
-                      return Container();
+                      return Container(
+                        color: Colors.black.withOpacity(0.75),
+                        child: Column(
+                          children: <Widget>[
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 40),
+                                child: Container(
+                                    child: CachedNetworkImage(
+                                      imageUrl: imageUrl,
+                                      fit: BoxFit.cover,
+
+                                    )),
+                              ),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.replay_10,
+                                            size: 40,
+                                          ),
+                                          onPressed: () => audioPlayer
+                                              .seek(_position - Duration(seconds: 10)),
+                                        ),
+                                        GestureDetector(
+                                            onTap: () => playPod(),
+                                            child: AnimatedIcon(
+                                              icon: AnimatedIcons.play_pause,
+                                              progress: playPauseController,
+                                              size: 40,
+                                            )),
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.forward_10,
+                                            size: 40,
+                                          ),
+                                          onPressed: () => audioPlayer
+                                              .seek(_position + Duration(seconds: 10)),
+                                        )
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      children: <Widget>[
+                                        Text(_printDuration(_position)),
+                                        Expanded(child: slider()),
+                                        Text(_printDuration(_duration)),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
                     }
                     _position = snapshot.data;
                     return Container(
