@@ -82,8 +82,7 @@ class _LibraryPageState extends State<LibraryPage> with AutomaticKeepAliveClient
                         child: CachedNetworkImage(
                     imageUrl: pod.artworkUrl100,
                     fit: BoxFit.cover,
-                    placeholder: (_,__)=>SizedBox(width: 100, height: 100, child: Shimmer.fromColors(child: Container(width: 50,height: 50, color: Colors.grey,), baseColor: Colors.blue, highlightColor: Colors.white),),
-                  ),
+                    ),
 //                        Image.network(
 //                          pod.artworkUrl600,
 //                          scale: 0.5,

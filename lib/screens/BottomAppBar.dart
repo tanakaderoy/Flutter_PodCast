@@ -1,4 +1,7 @@
+import 'package:audioplayers/audioplayers.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dart_notification_center/dart_notification_center.dart';
 import 'package:flutter/material.dart';
 import 'package:pod_cast_app/Util/Constants.dart';
 import 'package:pod_cast_app/models/ItunesSearchResultModel.dart';
@@ -6,6 +9,8 @@ import 'package:pod_cast_app/screens/AccountScreen.dart';
 import 'package:pod_cast_app/screens/HomeScreen.dart';
 import 'package:pod_cast_app/screens/LibraryScreen.dart';
 import 'package:pod_cast_app/service/ApiService.dart';
+import 'package:pod_cast_app/service/AudioServiceHelper.dart';
+import 'package:webfeed/domain/rss_item.dart';
 
 class BottomNavBarController extends StatefulWidget {
   final List<iTunesSearchResults> list;
@@ -17,11 +22,23 @@ class BottomNavBarController extends StatefulWidget {
 }
 
 class _BottomNavBarControllerState extends State<BottomNavBarController> {
+
 //  final List<Widget> _children = [, ,];
   List<String> imageUrls = [];
   List<WidgetModel> _pages = [];
   int _currentIndex = 0;
   List<iTunesSearchResults> list;
+
+
+@override
+  void dispose() {
+    // TODO: implement dispose
+  DartNotificationCenter.post(channel: kDispose);
+  DartNotificationCenter.unsubscribe(observer: this);
+  AudioServiceHelperr.shared.release();
+  print('dispose');
+    super.dispose();
+  }
 
   void setUp() async {
      list = widget.list;
@@ -49,6 +66,8 @@ class _BottomNavBarControllerState extends State<BottomNavBarController> {
 
   final PageStorageBucket bucket = PageStorageBucket();
    PageController pageController;
+   AudioPlayer audioPlayer;
+  String imageUrl;
 
   @override
   void initState() {
@@ -59,27 +78,118 @@ class _BottomNavBarControllerState extends State<BottomNavBarController> {
         keepPage: true,
       initialPage: _currentIndex,
     );
+    DartNotificationCenter.subscribe(channel: kNotPlaying, observer: this, onNotification: (options){
+      isPaused = true;
+    });
 
+    DartNotificationCenter.subscribe(channel: kPlaying, observer: this, onNotification: (options){
+      print('Tanaka $options');
+      Map<String,dynamic> map = options;
+      RssItem Gottenepisode = map['episode'];
+      imageUrl = map['image'];
+      episode = Gottenepisode;
+      isPlaying = true;
+      isPaused = false;
+      pod = map['pod'];
+      print('Playing: ${episode.title}');
+    });
 
   }
+  bool isPlaying = false;
+  bool isPaused = false;
+  RssItem episode;
+  iTunesSearchResults pod;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('PodCast'),
-      ),
-      bottomNavigationBar: _pages.isNotEmpty ? _bottomNavigationBar(_currentIndex): null,
-      body: _pages.isNotEmpty ? PageStorage(
-        child:  PageView(
-          controller: pageController,
-          onPageChanged: onPageSwiped,
-          children: _pages.map((p)=>p.widget).toList(),
-        ),
-        bucket: bucket,
-      ):Container(),
+
+    return WillPopScope(
+      onWillPop: ()async{
+        await  AudioServiceHelperr.shared.release();
+        return true;
+      },
+      child: Scaffold(
+//      appBar: AppBar(
+//        title: Text('PodCast'),
+//      ),
+        bottomNavigationBar: _pages.isNotEmpty ? _bottomNavigationBar(_currentIndex): null,
+        body: _pages.isNotEmpty ? SafeArea(
+          child: PageStorage(
+            child:  Stack(
+              children: <Widget>[
+                PageView(
+                  controller: pageController,
+                  onPageChanged: onPageSwiped,
+                  children: _pages.map((p)=>p.widget).toList(),
+                ),
+                isPlaying ? Positioned.fill(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: GestureDetector(
+                      onTap: () async{
+                        var mil = await AudioServiceHelperr.shared.getCurrentPosition();
+
+                        Navigator.of(
+                            context)
+                            .push(
+                          PageRouteBuilder(
+                            opaque:
+                            false,
+                            pageBuilder: (context, _, __) =>
+                                PodcastPlayer(
+                                    episode:
+                                    episode,
+                                    imageUrl:
+                                    imageUrl,
+                                    mil:
+                                    mil,
+                                  pod: pod,
+                                ),
+                          ),
+                        );},
+                      child: Dismissible(
+                        direction: DismissDirection.down,
+                        key: Key('miniPlayer'),
+                        onDismissed:(d){
+                      setState(() {
+                        isPlaying = false;
+                      });
+                      AudioServiceHelperr.shared.release();},
+                        child: Container(
+                        color: Colors.black45,
+                        height: MediaQuery.of(context).size.height * 0.08,
+                        child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                        CachedNetworkImage(imageUrl: imageUrl,fit: BoxFit.cover,),
+                        SizedBox(width: 20,),
+                        Expanded(child: MarqueeWidget(direction: Axis.horizontal,animationDuration: Duration(seconds: 4),pauseDuration: Duration(seconds: 4),backDuration: Duration(seconds: 4),child: Text('${episode.title} - ${pod.collectionName}'))),
+                          isPaused ?  IconButton(icon: Icon(Icons.play_arrow),onPressed: (){
+                            setState(() {
+                              isPaused = false;
+                            });
+                            AudioServiceHelperr.shared.resume();},):IconButton(icon: Icon(Icons.pause),onPressed:(){
+                            setState(() {
+                              isPaused = true;
+                            });
+                            AudioServiceHelperr.shared.pause(); },) ,
+
+                        ],
+                      ),
+                      ),
+                      ),
+                    ),
+                  ),
+                )
+ : Container()
+              ],
+            ),
+            bucket: bucket,
+          ),
+        ):Container(),
 
 //_pages[_currentIndex].widget
+      ),
     );
   }
 
@@ -95,11 +205,13 @@ class _BottomNavBarControllerState extends State<BottomNavBarController> {
   );
 
   void onTabTapped(int index) {
+    DartNotificationCenter.post(channel: kStartUpAudio, options: audioPlayer);
+
     setState(() {
       _currentIndex = index;
     });
 //    pageController
-    pageController.animateToPage(index, curve: Curves.bounceIn,duration: Duration(milliseconds: 200));
+    pageController.animateToPage(index, curve: Curves.easeIn,duration: Duration(milliseconds: 150));
   }
 
   void onPageSwiped(int index){
@@ -120,4 +232,65 @@ class WidgetModel {
 
   WidgetModel(
       {@required this.title, @required this.widget, @required this.icon});
+}
+
+
+
+
+class MarqueeWidget extends StatefulWidget {
+  final Widget child;
+  final Axis direction;
+  final Duration animationDuration, backDuration, pauseDuration;
+
+  MarqueeWidget({
+    @required this.child,
+    this.direction: Axis.horizontal,
+    this.animationDuration: const Duration(milliseconds: 3000),
+    this.backDuration: const Duration(milliseconds: 800),
+    this.pauseDuration: const Duration(milliseconds: 800),
+  });
+
+  @override
+  _MarqueeWidgetState createState() => _MarqueeWidgetState();
+}
+
+class _MarqueeWidgetState extends State<MarqueeWidget> {
+  ScrollController scrollController;
+
+  @override
+  void initState() {
+    scrollController = ScrollController(initialScrollOffset: 50.0);
+    WidgetsBinding.instance.addPostFrameCallback(scroll);
+    super.initState();
+  }
+
+  @override
+  void dispose(){
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: widget.child,
+      scrollDirection: widget.direction,
+      controller: scrollController,
+    );
+  }
+
+  void scroll(_) async {
+    while (scrollController.hasClients) {
+      await Future.delayed(widget.pauseDuration);
+      if(scrollController.hasClients)
+        await scrollController.animateTo(
+            scrollController.position.maxScrollExtent,
+            duration: widget.animationDuration,
+            curve: Curves.ease);
+      await Future.delayed(widget.pauseDuration);
+      if(scrollController.hasClients)
+        await scrollController.animateTo(0.0,
+            duration: widget.backDuration, curve: Curves.easeOut);
+    }
+  }
 }
