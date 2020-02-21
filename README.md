@@ -3,4 +3,5 @@
  
 #ScreenShots
 ![image](podIOSHome.png)
+![ScreenShot](https://raw.github.com/tanakaderoy/Flutter_PodCast/master/podiOSHome.png)
 ![iOS Home Page](/podIOSHome.png?raw=true "iOS Home Page")
