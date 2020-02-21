@@ -80,7 +80,7 @@ class _LibraryPageState extends State<LibraryPage> with AutomaticKeepAliveClient
                     children: <Widget>[
                       GestureDetector(
                         child: CachedNetworkImage(
-                    imageUrl: pod.artworkUrl100,
+                    imageUrl: pod.artworkUrl600,
                     fit: BoxFit.cover,
                     ),
 //                        Image.network(
