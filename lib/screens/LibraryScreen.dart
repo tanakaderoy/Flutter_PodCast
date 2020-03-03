@@ -9,6 +9,7 @@ import 'package:pod_cast_app/service/FirebaseHelper.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'HomeScreen.dart';
+import 'PodDetailScreen.dart';
 
 class LibraryPage extends StatefulWidget {
   const LibraryPage({Key key, this.layoutGroup}) : super(key: key);

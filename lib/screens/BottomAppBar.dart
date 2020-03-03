@@ -10,7 +10,10 @@ import 'package:pod_cast_app/screens/HomeScreen.dart';
 import 'package:pod_cast_app/screens/LibraryScreen.dart';
 import 'package:pod_cast_app/service/ApiService.dart';
 import 'package:pod_cast_app/service/AudioServiceHelper.dart';
+import 'package:pod_cast_app/widgets/MarqueeWidget.dart';
 import 'package:webfeed/domain/rss_item.dart';
+
+import 'PodCastPlayerScreen.dart';
 
 class BottomNavBarController extends StatefulWidget {
   final List<iTunesSearchResults> list;
@@ -35,7 +38,7 @@ class _BottomNavBarControllerState extends State<BottomNavBarController> {
     // TODO: implement dispose
 //  DartNotificationCenter.post(channel: kDispose);
   DartNotificationCenter.unsubscribe(observer: this);
-  AudioServiceHelperr.shared.release();
+  AudioServiceHelper.shared.release();
   print('dispose');
     super.dispose();
   }
@@ -107,7 +110,7 @@ class _BottomNavBarControllerState extends State<BottomNavBarController> {
 
     return WillPopScope(
       onWillPop: ()async{
-        await  AudioServiceHelperr.shared.release();
+        await  AudioServiceHelper.shared.release();
         return true;
       },
       child: Scaffold(
@@ -129,7 +132,7 @@ class _BottomNavBarControllerState extends State<BottomNavBarController> {
                     alignment: Alignment.bottomCenter,
                     child: GestureDetector(
                       onTap: () async{
-                        var mil = await AudioServiceHelperr.shared.getCurrentPosition();
+                        var mil = await AudioServiceHelper.shared.getCurrentPosition();
 
                         Navigator.of(
                             context)
@@ -156,7 +159,7 @@ class _BottomNavBarControllerState extends State<BottomNavBarController> {
                       setState(() {
                         isPlaying = false;
                       });
-                      AudioServiceHelperr.shared.release();},
+                      AudioServiceHelper.shared.release();},
                         child: Container(
                         color: Colors.black45,
                         height: MediaQuery.of(context).size.height * 0.08,
@@ -170,11 +173,11 @@ class _BottomNavBarControllerState extends State<BottomNavBarController> {
                             setState(() {
                               isPaused = false;
                             });
-                            AudioServiceHelperr.shared.resume();},):IconButton(icon: Icon(Icons.pause),onPressed:(){
+                            AudioServiceHelper.shared.resume();},):IconButton(icon: Icon(Icons.pause),onPressed:(){
                             setState(() {
                               isPaused = true;
                             });
-                            AudioServiceHelperr.shared.pause(); },) ,
+                            AudioServiceHelper.shared.pause(); },) ,
 
                         ],
                       ),
@@ -239,60 +242,3 @@ class WidgetModel {
 
 
 
-class MarqueeWidget extends StatefulWidget {
-  final Widget child;
-  final Axis direction;
-  final Duration animationDuration, backDuration, pauseDuration;
-
-  MarqueeWidget({
-    @required this.child,
-    this.direction: Axis.horizontal,
-    this.animationDuration: const Duration(milliseconds: 3000),
-    this.backDuration: const Duration(milliseconds: 800),
-    this.pauseDuration: const Duration(milliseconds: 800),
-  });
-
-  @override
-  _MarqueeWidgetState createState() => _MarqueeWidgetState();
-}
-
-class _MarqueeWidgetState extends State<MarqueeWidget> {
-  ScrollController scrollController;
-
-  @override
-  void initState() {
-    scrollController = ScrollController(initialScrollOffset: 50.0);
-    WidgetsBinding.instance.addPostFrameCallback(scroll);
-    super.initState();
-  }
-
-  @override
-  void dispose(){
-    scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: widget.child,
-      scrollDirection: widget.direction,
-      controller: scrollController,
-    );
-  }
-
-  void scroll(_) async {
-    while (scrollController.hasClients) {
-      await Future.delayed(widget.pauseDuration);
-      if(scrollController.hasClients)
-        await scrollController.animateTo(
-            scrollController.position.maxScrollExtent,
-            duration: widget.animationDuration,
-            curve: Curves.ease);
-      await Future.delayed(widget.pauseDuration);
-      if(scrollController.hasClients)
-        await scrollController.animateTo(0.0,
-            duration: widget.backDuration, curve: Curves.easeOut);
-    }
-  }
-}

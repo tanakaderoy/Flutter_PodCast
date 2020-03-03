@@ -43,6 +43,8 @@ dependencies:
   url_launcher: ^5.4.1
   audio_service: ^0.6.1
   dart_notification_center: ^1.0.0+1
+  firebase_performance: ^0.3.1+5
+
 
 
 dev_dependencies:

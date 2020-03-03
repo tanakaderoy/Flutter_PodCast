@@ -1,6 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 
-class AudioServiceHelperr{
+class AudioServiceHelper{
   static final shared = AudioPlayer();
 //  void setUrl(String url){
 //    shared.setUrl(url);
